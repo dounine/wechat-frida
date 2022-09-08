@@ -158,6 +158,21 @@ sendTextMessage("filehelper", "hi")
 ```javascript
 frida 微信 --debug --runtime=v8 --no-pause -l  ./src/sendMessage.js
 ```
+这是消息接收的
+```javascript
+Interceptor.attach(ObjC.classes.FFProcessReqsvrZZ['- notifyNewMsgNotificationOnMainThread:msgData:'].implementation, {
+    onEnter: function (args) {
+        let data = new ObjC.Object(args[3]).$ivars;
+        let fromUsrName = data.fromUsrName;
+        if (fromUsrName == "17798251148@chatroom") {
+            let toUsrName = data.toUsrName;
+            let messageType = data.messageType;
+            let msgContent = data.msgContent.toString();
+            console.log(`fromUserName:${fromUsrName} , toUsrName:${toUsrName} , messageType:${messageType} , msgContent:${msgContent}}`)
+        }
+    }
+});
+```
 
 # Window下的微信Hook
 未完
